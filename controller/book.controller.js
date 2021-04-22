@@ -36,15 +36,17 @@ class BookController {
 
     async addBook(req, res) {
         try {
-            const { name, description, author_id, book_theme_id, price, book_thumb_url } = req.query;
+            // console.log(req.body)
+            const { name, description, author_id, book_theme_id, price, book_thumb_url } = req.body;
             const order = `Insert into books(name, description, author_id, book_theme_id, price)
             values($1, $2, $3, $4, $5) returning *;`;
             const data = await pool.query(order, [name, description, author_id, book_theme_id, price]);
             const bookId = data.rows[0].id;
             bookThumbController.addThumb(book_thumb_url, bookId)
-
+            res.json({id: bookId, status: 200});
         } catch (err) {
             console.error(err.stack);
+            res.json({func: "Addbook", status: 300})
         }
     }
 }

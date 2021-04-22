@@ -25,7 +25,8 @@ class AuthorController {
 
     async addAuthor(req, res) {
         try {
-            const { name, date_of_birth } = req.query;
+            // console.log(JSON.stringify(req.body));
+            const { name, date_of_birth } = req.body;
             const order = `Insert into authors(name, date_of_birth) 
             values($1, $2) returning *;`;
             const data = await pool.query(order, [name, date_of_birth]);
