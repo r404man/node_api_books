@@ -1,6 +1,8 @@
 const { pool } = require('../config/dbconnect');
+const Dumper = require('../test/tester');
 
 class AuthorController {
+    constructor() { }
 
     async getAllAuthors(req, res) {
         try {
@@ -25,12 +27,15 @@ class AuthorController {
 
     async addAuthor(req, res) {
         try {
-            // console.log(JSON.stringify(req.body));
-            const { name, date_of_birth } = req.body;
-            const order = `Insert into authors(name, date_of_birth) 
-            values($1, $2) returning *;`;
-            const data = await pool.query(order, [name, date_of_birth]);
-            res.json(data.rows);
+            let reqObj = req.body;
+            if (Dumper.isEmpty(reqObj, res)) { return }
+            if (Dumper.isEqual(req.body, ['name', 'date_of_birth'], res)) {
+                const { name, date_of_birth } = req.body;
+                const order = `Insert into authors(name, date_of_birth) 
+                                    values($1, $2) returning *;`;
+                const data = await pool.query(order, [name, date_of_birth]);
+                res.json(data.rows);
+            }
         } catch (err) {
             console.error(err.stack)
         }
@@ -62,5 +67,8 @@ class AuthorController {
         }
     }
 }
+
+
+
 
 module.exports = new AuthorController();

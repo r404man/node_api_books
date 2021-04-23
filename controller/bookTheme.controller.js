@@ -24,7 +24,7 @@ class BookThemeController {
 
     async addTheme(req, res) {
         try {
-            const { name } = req.query;
+            const { name } = req.body;
             const order = `Insert into books_theme(name) 
             values($1) returning *;`;
             const data = await pool.query(order, [name]);
